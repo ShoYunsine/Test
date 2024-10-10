@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Read NFC UID</title>
+</head>
+<body>
+  <h1>Scan NFC Tag</h1>
+  <button id="scan-nfc">Scan NFC Tag</button>
+  <p id="nfc-result"></p>
+
+  <script>
+    const nfcResult = document.getElementById('nfc-result');
+
+    document.getElementById('scan-nfc').addEventListener('click', async () => {
+      if ("NDEFReader" in window) {
+        try {
+          const reader = new NDEFReader();
+          await reader.scan();
+          nfcResult.textContent = 'Waiting for NFC tag...';
+
+          reader.onreading = event => {
+            const uid = event.serialNumber;  // The UID (serial number) of the NFC tag
+            nfcResult.textContent = `NFC Tag UID: ${uid}`;
+          };
+
+        } catch (error) {
+          nfcResult.textContent = `NFC scan failed: ${error}`;
+        }
+      } else {
+        nfcResult.textContent = "NFC is not supported on this device.";
+      }
+    });
+  </script>
+</body>
+</html>
